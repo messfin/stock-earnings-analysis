@@ -622,7 +622,7 @@ class ERAnalysisApp:
         # ... existing code ...
         
         # Add correlation analysis
-        doc.add_heading('Correlation Analysis', level=1)
+        doc = Document()
         main_ticker = list(self.current_results.keys())[0]
         main_data = self.current_results[main_ticker]['Close'] if self.current_results[main_ticker] is not None else None
         
@@ -633,6 +633,103 @@ class ERAnalysisApp:
                 doc.add_paragraph(f'{ticker} correlation with {main_ticker}: {corr_category}', style='List Bullet')
         
         # ... rest of export_report code ...
+
+    def export_setup_guide(self):
+        """Create a Word document with setup instructions"""
+        try:
+            doc = Document()
+            
+            # Title
+            doc.add_heading('Stock Earnings Analysis - Setup Guide', 0)
+            
+            # 1. Clone Repository
+            doc.add_heading('1. Clone the Repository', level=1)
+            p = doc.add_paragraph()
+            p.add_run('Navigate to where you want to store the project:\n').bold = True
+            doc.add_paragraph('cd c:\\   # or any preferred directory')
+            doc.add_paragraph('git clone https://github.com/messfin/stock-earnings-analysis.git')
+            doc.add_paragraph('cd stock-earnings-analysis')
+            
+            # 2. Set Up Python Environment
+            doc.add_heading('2. Set Up Python Environment', level=1)
+            doc.add_heading('Option A: Using venv (Recommended)', level=2)
+            doc.add_paragraph('# Create virtual environment\npython -m venv venv')
+            p = doc.add_paragraph('# Activate virtual environment\n')
+            p.add_run('On Windows:\n').bold = True
+            doc.add_paragraph('venv\\Scripts\\activate')
+            p = doc.add_paragraph()
+            p.add_run('On Mac/Linux:\n').bold = True
+            doc.add_paragraph('source venv/bin/activate')
+            
+            doc.add_heading('Option B: Direct Installation', level=2)
+            doc.add_paragraph('If you don\'t want to use a virtual environment, you can install packages directly.')
+            
+            # 3. Install Required Packages
+            doc.add_heading('3. Install Required Packages', level=1)
+            doc.add_paragraph('# Install all required packages\npip install -r requirements.txt')
+            doc.add_paragraph('# If requirements.txt is missing, install packages directly:\npip install yfinance pandas matplotlib python-docx numpy tkinter')
+            
+            # 4. Run the Scripts
+            doc.add_heading('4. Run the Scripts', level=1)
+            doc.add_heading('To run the sector analysis:', level=2)
+            doc.add_paragraph('python earnings_sector_compare.py')
+            p = doc.add_paragraph('This will open the GUI application where you can:')
+            doc.add_paragraph('- Enter a stock ticker', style='List Bullet')
+            doc.add_paragraph('- Select earnings dates', style='List Bullet')
+            doc.add_paragraph('- Add peer companies for comparison', style='List Bullet')
+            doc.add_paragraph('- View and export analysis results', style='List Bullet')
+            
+            doc.add_heading('To run the main analysis:', level=2)
+            doc.add_paragraph('python zmtec_hmain.py')
+            
+            # 5. Troubleshooting
+            doc.add_heading('5. Troubleshooting', level=1)
+            doc.add_paragraph('If you encounter any errors:')
+            doc.add_paragraph('1. Verify Python installation:\npython --version  # Should show Python 3.x')
+            doc.add_paragraph('2. Check installed packages:\npip list')
+            
+            p = doc.add_paragraph('3. Common issues:')
+            doc.add_paragraph('- If you get "Module not found" errors, try:\n  pip install [module_name]', style='List Bullet')
+            doc.add_paragraph('- If you get permission errors, try running as administrator', style='List Bullet')
+            doc.add_paragraph('- For tkinter issues on Linux:\n  sudo apt-get install python3-tk  # For Ubuntu/Debian', style='List Bullet')
+            
+            # 6. Data Export Location
+            doc.add_heading('6. Data Export Location', level=1)
+            doc.add_paragraph('- Charts and data files will be saved in the same directory as the scripts', style='List Bullet')
+            doc.add_paragraph('- Look for files with names like:', style='List Bullet')
+            doc.add_paragraph('  - earnings_analysis_[TICKER]_[DATE].png', style='List Bullet')
+            doc.add_paragraph('  - earnings_analysis_[TICKER]_[DATE].csv', style='List Bullet')
+            
+            # 7. Updates
+            doc.add_heading('7. Updates', level=1)
+            doc.add_paragraph('To get the latest updates:\ngit pull origin main')
+            
+            # 8. Example Usage
+            doc.add_heading('8. Example Usage', level=1)
+            p = doc.add_paragraph('For earnings_sector_compare.py:')
+            doc.add_paragraph('1. Enter a ticker (e.g., "AAPL")', style='List Number')
+            doc.add_paragraph('2. Select an earnings date from the dropdown', style='List Number')
+            doc.add_paragraph('3. Enter peer tickers (e.g., "MSFT,GOOGL")', style='List Number')
+            doc.add_paragraph('4. Click "Analyze"', style='List Number')
+            
+            p = doc.add_paragraph('\nFor zmtec_hmain.py:')
+            doc.add_paragraph('1. Follow the command-line prompts', style='List Number')
+            doc.add_paragraph('2. Enter requested information', style='List Number')
+            doc.add_paragraph('3. View the analysis results', style='List Number')
+            
+            # Need Help section
+            doc.add_heading('Need Help?', level=1)
+            doc.add_paragraph('- Check the repository issues page', style='List Bullet')
+            doc.add_paragraph('- Review the documentation in the code', style='List Bullet')
+            doc.add_paragraph('- Contact the repository maintainer', style='List Bullet')
+            
+            # Save the document with a specific path
+            filename = r'c:\sa\Stock_Earnings_Analysis_Setup_Guide.docx'  # Example path
+            doc.save(filename)
+            messagebox.showinfo("Success", f"Setup guide exported as {filename}")
+            
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to export setup guide: {str(e)}")
 
     def run(self):
         self.root.mainloop()
